@@ -1,7 +1,7 @@
 # What is this repo for?
 This is a paper reading repository for you to quickly catch up with the latest trends in your research field.
 
-# What are the problems and opportunities of existing work?
+# What are the problems and opportunities?
 * I need an open community for paper reading and digesting, but I cannot find one anywhere.
 * I want to stay updated on the latest research.
 * I've noticed a few YouTubers doing 2-hour-long, in-depth analyses of important papers. It's good, but it has the following three problems:
