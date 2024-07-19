@@ -23,3 +23,5 @@ This is a paper reading repository for you to quickly catch up with the latest t
 * Learners can ask questions by creating issues.
 * Learners can request new paper digests.
 * Learners can donate to this project for AI LLM token consumption.
+
+https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue
