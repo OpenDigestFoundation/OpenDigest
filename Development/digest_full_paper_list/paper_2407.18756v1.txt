@@ -1,0 +1,92 @@
+**summary**: 这篇文章在解决预测人类轨迹的问题，特别是在自动驾驶或移动机器人等自主系统中，预测人类未来可能的行动路径。人类轨迹预测是一个复杂且带噪声的过程，没有单一的预测能够完全匹配实际的未来轨迹。
+
+这篇文章提出了一种基于变异测试（Metamorphic Testing, MT）的新方法来评估人类轨迹预测。变异测试是一种软件测试输入生成方法，它利用系统定义的属性（即变异关系）来生成后续测试案例，并通过这些关系来处理那些难以用传统测试方法验证的程序。
+
+与已有工作相比，这篇文章提出的变异测试方法通过引入Wasserstein Violation Criterion（WVC）来统计评估测试案例是否违反了标签保持的变异关系。这种方法的进步在于它不需要精确的地面真实数据，而是通过比较预测轨迹分布的Wasserstein距离来检测故障，从而为评估人类轨迹预测模型提供了一种新的视角。
+
+这篇文章对自主系统领域的潜在未来影响在于，它提供了一种新的测试和验证方法，可以增强预测模型的鲁棒性、准确性和可靠性。通过这种方法，可以更全面地评估模型在不同输入变化下的表现，从而有助于提高自主系统在现实世界中应用的安全性和有效性。
+**related work**: （Alahi et al., 2016）Social LSTM: Human Trajectory Prediction in Crowded Spaces：提出了一种基于深度学习的人类轨迹预测方法，特别适用于拥挤空间中人类行为的预测。
+
+（Bae et al., 2022）Non-Probability Sampling Network for Stochastic Human Trajectory Prediction：介绍了一种非概率采样网络，用于随机人类轨迹预测，旨在提高预测的准确性和鲁棒性。
+
+（Cao et al., 2022）Advdo: Realistic adversarial attacks for trajectory prediction：研究了针对轨迹预测模型的实际对抗性攻击，以评估和提高模型的安全性。
+
+（Cao et al., 2023）Robust Trajectory Prediction against Adversarial Attacks：进一步研究了对抗性攻击对轨迹预测的影响，并提出了提高模型鲁棒性的方法。
+
+（Deng et al., 2022）A Declarative Metamorphic Testing Framework for Autonomous Driving：提出了一个用于自动驾驶的声明式变异测试框架，以系统地测试和验证自动驾驶系统。
+
+（Lee et al., 2017）DESIRE: Distant future prediction in dynamic scenes with interacting agents：提出了一种预测动态场景中交互智能体未来行为的方法，强调了预测的多模态性和不确定性。
+
+（Mangalam et al., 2021）From Goals, Waypoints & Paths To Long Term Human Trajectory Forecasting：研究了长期人类轨迹预测，考虑了目标、航点和路径对预测的影响。
+
+（Robicquet et al., 2016）Learning Social Etiquette: Human Trajectory Understanding In Crowded Scenes：通过学习社会礼仪来理解拥挤场景中的人类轨迹，为人类行为的理解提供了新的视角。
+
+（Uhlemann et al., 2024）Evaluating Pedestrian Trajectory Prediction Methods With Respect to Autonomous Driving：评估了行人轨迹预测方法在自动驾驶领域的适用性，为自动驾驶系统的安全评估提供了方法。
+
+（Zhang et al., 2023）TrajPAC: Towards Robustness Verification of Pedestrian Trajectory Prediction Models：提出了一种框架，用于验证行人轨迹预测模型的鲁棒性，强调了在模型验证中考虑对抗性攻击的重要性。
+**approach**: 这篇文章的核心方法是应用变异测试（Metamorphic Testing, MT）来评估人类轨迹预测（Human Trajectory Prediction, HTP）。下面是文章中描述的核心方法的详细解释，结合文章中的算法和公式：
+
+1. **变异测试（MT）概念**：MT是一种软件测试方法，它利用程序的属性（称为变异关系，Metamorphic Relations, MRs）来生成后续测试案例。这些属性描述了程序输入的某些变换应该如何影响输出。在HTP的上下文中，MRs可以用来生成新的测试案例，并通过比较变换前后的输出来评估模型的一致性和鲁棒性。
+
+2. **变异关系（MRs）**：文章中介绍了两种主要的MRs：
+   - **MR1: Mirroring**：沿着分割图的水平或垂直轴镜像输入。这种变换测试模型对于这种基本几何变换的鲁棒性。
+   - **MR2: Rescale**：改变原始图像的缩放因子，即改变输入图像和轨迹的大小。这种变换测试模型对于输入尺寸变化的一致性。
+
+3. **Wasserstein Violation Criterion（WVC）**：为了评估MR是否被违反，文章提出了WVC。WVC是一种统计方法，用于比较两个轨迹分布的相似性。它基于Wasserstein距离（也称为Earth Mover's Distance），计算将一个分布转换为另一个分布所需的最小成本。
+
+4. **Wasserstein距离的计算**：Wasserstein距离是通过匹配每个集合中的样本轨迹来计算的，目标是最小化匹配点之间的总体距离。在HTP中，这意味着计算一个分布中的轨迹到另一个分布中轨迹的最小距离，每个轨迹都与另一个轨迹精确匹配。
+
+5. **测试过程**：文章中的算法概述了一个测试过程，包括：
+   - **准备阶段**：采样源测试案例并执行系统测试（HTP模型）多次，以处理模型的非确定性输出。
+   - **MT阶段**：选择一个MR并应用它来转换测试案例，然后执行一次测试。
+   - **评估阶段**：将转换后的测试案例的结果与源测试案例的每次执行结果进行比较，并计算z-test来检测潜在的违规。
+
+6. **算法实现**：文章中提供了一个算法的伪代码，描述了从采样源测试案例到执行HTP模型，再到计算Wasserstein距离和z-test的整个流程。
+
+7. **实验验证**：文章通过在Stanford Drone Dataset (SDD)上进行实验，使用YNet轨迹预测模型来验证所提出的MT方法的有效性。实验结果表明，WVC在检测违反MR的测试案例方面与传统的基于地面真实数据的评估标准（如平均位移误差ADE和最终位移误差FDE）具有相似的有效性。
+
+通过这种方法，文章展示了如何系统地评估和提高HTP模型的鲁棒性和可靠性，即使在缺乏精确地面真实数据的情况下。
+**experiment**: 这篇文章的实验部分对比了使用Wasserstein Violation Criterion（WVC）与传统的基于地面真实数据的评估标准（Best-of-N ADE和FDE，Mean ADE和Mean FDE）在检测变异关系违反方面的效果。以下是具体的数字和分析：
+
+1. **短期预测（Short-term forecasting）**：
+   - **WVC**：违反变异关系的比率是61.0%（Mirror-v）、61.9%（Mirror-h）和71.1%（Rescale）。
+   - **BoN-ADE**：违反变异关系的比率是27.0%（Mirror-v）、26.1%（Mirror-h）和36.1%（Rescale）。
+   - **BoN-FDE**：违反变异关系的比率是27.8%（Mirror-v）、25.1%（Mirror-h）和28.8%（Rescale）。
+   - **Mean-ADE**：违反变异关系的比率是65.2%（Mirror-v）、64.6%（Mirror-h）和75.6%（Rescale）。
+   - **Mean-FDE**：违反变异关系的比率是64.4%（Mirror-v）、63.5%（Mirror-h）和74.1%（Rescale）。
+
+2. **长期预测（Long-term forecasting）**：
+   - **WVC**：违反变异关系的比率是33.6%（Mirror-v）、33.6%（Mirror-h）和44.1%（Rescale）。
+   - **BoN-ADE**：违反变异关系的比率是42.7%（Mirror-v）、39.3%（Mirror-h）和40.8%（Rescale）。
+   - **BoN-FDE**：违反变异关系的比率是35.1%（Mirror-v）、33.0%（Mirror-h）和33.2%（Rescale）。
+   - **Mean-ADE**：违反变异关系的比率是37.7%（Mirror-v）、36.9%（Mirror-h）和48.0%（Rescale）。
+   - **Mean-FDE**：违反变异关系的比率是35.6%（Mirror-v）、32.5%（Mirror-h）和43.3%（Rescale）。
+
+分析结果表明：
+- 对于短期预测，WVC的违反率与Mean-ADE和Mean-FDE的违反率非常接近，这表明WVC可以作为一种有效的替代方法，即使在没有地面真实数据的情况下也能检测出违反变异关系的情况。
+- 对于长期预测，WVC的违反率与Mean-ADE和Mean-FDE的违反率也显示出了相似性，尽管在某些情况下WVC的违反率略低于Mean-ADE和Mean-FDE。
+- 在短期预测中，BoN方法的违反率明显低于Mean方法，这表明BoN方法可能没有充分考虑到轨迹分布的多样性。
+- 在长期预测中，BoN和Mean方法之间的差距较小，但Mean方法仍然显示出更高的违反率，这可能意味着长期预测中轨迹分布的多样性更为重要。
+
+此外，文章还进行了额外的实验，通过将ADE/FDE检测到的违反情况视为类标签，WVC检测到的违反情况视为预测，来评估两者之间的一致性。结果显示，在不同的p值阈值下，WVC与传统的基于ADE/FDE的方法在检测违反方面具有很高的一致性。这进一步验证了WVC作为一种有效的变异测试标准，可以在不需要地面真实数据的情况下使用。
+**impact**: 这篇文章提出的基于变异测试（Metamorphic Testing, MT）的人类轨迹预测（Human Trajectory Prediction, HTP）评估方法，对自主系统领域的潜在影响包括：
+
+1. **提高模型鲁棒性**：通过变异测试，可以识别和修复在特定输入变换下可能导致模型表现下降的错误，从而提高模型在实际应用中的鲁棒性。
+
+2. **增强测试方法的多样性**：传统的测试方法可能依赖于有限的测试案例或者地面真实数据。MT方法不依赖于地面真实数据，可以基于输入变换生成新的测试案例，从而扩展了测试方法的范围和多样性。
+
+3. **改进模型评估标准**：通过引入Wasserstein Violation Criterion（WVC），提供了一种新的统计方法来评估预测轨迹分布的相似性，这可能成为现有评估标准的重要补充。
+
+4. **促进自动化测试流程**：MT方法可以自动化地生成测试案例并评估结果，减少了人工参与的需求，提高了测试过程的效率。
+
+5. **推动跨领域应用**：MT方法的成功应用在HTP上可能会激发其他领域，如自动驾驶、机器人导航等，采用类似的方法来评估和提高其系统的预测能力。
+
+6. **提升安全性**：在安全关键的应用中，如自动驾驶，确保轨迹预测模型的准确性和可靠性至关重要。MT方法可以帮助发现潜在的安全隐患，从而提升系统的安全性。
+
+7. **促进研究方法的创新**：这篇文章的方法可能会激发新的研究方法，特别是在处理那些难以获得精确测试结果的领域，例如在机器学习和人工智能的其他应用中。
+
+8. **影响教育和培训**：随着MT方法在HTP领域的应用，教育和培训课程可能需要更新，以包含这些新的测试技术和评估方法。
+
+9. **推动法规和标准的制定**：随着自主系统的发展，可能会有新的法规和标准制定来规范这些系统的测试和验证过程，MT方法可能会成为这些标准的一部分。
+
+10. **促进国际合作与研究**：由于这项工作得到了欧盟等机构的资助，它可能会促进跨国界和跨学科的合作，共同推动自主系统领域的研究和应用。
